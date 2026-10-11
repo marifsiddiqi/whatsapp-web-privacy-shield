@@ -1,0 +1,119 @@
+/*
+ * WhatsApp Web DOM selectors can change. These selectors intentionally cover
+ * common current UI patterns, but should be regression-tested after WhatsApp UI updates.
+ * The extension never reads or transmits message text.
+ *
+ * RULE ORDER MATTERS:
+ *   All blur rules come first. All unblur overrides come last.
+ *   This guarantees unblur rules always win on source-order when
+ *   specificity is equal.
+ */
+
+/* ─── MESSAGE TEXT ──────────────────────────────────────────────────────────── */
+
+html.wps-enabled.wps-blur-messages [data-testid="msg-container"] .selectable-text,
+html.wps-enabled.wps-blur-messages [data-testid="msg-container"] .copyable-text,
+html.wps-enabled.wps-blur-messages [data-testid="msg-container"] [dir="ltr"],
+html.wps-enabled.wps-blur-messages [data-testid="msg-container"] [dir="auto"] {
+  filter: blur(6px) !important;
+  transition: filter 100ms ease;
+}
+
+/* ─── NAMES (header + all chat-list panels including Archived) ──────────────── */
+
+html.wps-enabled.wps-blur-names #main header [title],
+html.wps-enabled.wps-blur-names [data-testid="cell-frame-title"] span,
+html.wps-enabled.wps-blur-names [data-testid="conversation-info-header-chat-title"] {
+  filter: blur(5px) !important;
+}
+
+/* ─── AVATARS ───────────────────────────────────────────────────────────────── */
+/*
+ * Targets the CONTAINER element, not just img children.
+ * Covers: real photos (img), default avatars (canvas/svg),
+ * community icons, status rings, Archived panel, and any
+ * panel WhatsApp renders outside of #side.
+ *
+ * Three layers of fallback:
+ *   1. data-testid container selectors (global, no parent restriction)
+ *   2. Scoped element fallbacks for #main header and #side
+ *   3. [data-testid="chat-list"] fallback — catches Archived panel
+ *      which WhatsApp renders outside of #side in some versions
+ */
+
+html.wps-enabled.wps-blur-avatars [data-testid*="avatar"],
+html.wps-enabled.wps-blur-avatars [data-testid="default-user"],
+html.wps-enabled.wps-blur-avatars [data-testid="default-group"],
+html.wps-enabled.wps-blur-avatars [data-testid="default-community"],
+html.wps-enabled.wps-blur-avatars [data-testid="community-icon"],
+html.wps-enabled.wps-blur-avatars [data-testid="status-v3"],
+html.wps-enabled.wps-blur-avatars [data-testid*="status-ring"],
+/* Scoped element fallbacks */
+html.wps-enabled.wps-blur-avatars #main header img,
+html.wps-enabled.wps-blur-avatars #main header canvas,
+html.wps-enabled.wps-blur-avatars #main header svg,
+html.wps-enabled.wps-blur-avatars #side img,
+html.wps-enabled.wps-blur-avatars #side canvas,
+html.wps-enabled.wps-blur-avatars #side svg,
+/* Global chat-list fallback — covers Archived and panels outside #side */
+html.wps-enabled.wps-blur-avatars [data-testid="chat-list"] img,
+html.wps-enabled.wps-blur-avatars [data-testid="chat-list"] canvas,
+html.wps-enabled.wps-blur-avatars [data-testid="chat-list"] svg {
+  filter: blur(8px) !important;
+  overflow: hidden;
+}
+
+/* ─── CHAT-LIST PREVIEWS (includes Archived panel) ─────────────────────────── */
+
+html.wps-enabled.wps-blur-previews [data-testid="last-msg"],
+html.wps-enabled.wps-blur-previews [data-testid="last-msg-status"],
+html.wps-enabled.wps-blur-previews [data-testid="cell-frame-secondary"] {
+  filter: blur(6px) !important;
+}
+
+/* ─── MEDIA THUMBNAILS (active conversation only) ───────────────────────────── */
+
+html.wps-enabled.wps-blur-media #main img,
+html.wps-enabled.wps-blur-media #main video,
+html.wps-enabled.wps-blur-media #main canvas {
+  filter: blur(10px) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+ * UNBLUR OVERRIDES
+ * Placed AFTER all blur rules so they win on source-order.
+ * Where needed, selectors are intentionally longer to beat conflicting rules
+ * on specificity as well.
+ * ═══════════════════════════════════════════════════════════════════════════════ */
+
+/* Keep the message composer and controls fully usable. */
+html.wps-enabled #main footer,
+html.wps-enabled #main footer *,
+html.wps-enabled [contenteditable="true"],
+html.wps-enabled [role="textbox"] {
+  filter: none !important;
+}
+
+
+/* ─── VISUAL STATUS INDICATOR ───────────────────────────────────────────────── */
+
+html[data-wps-ready="true"].wps-enabled body::after {
+  content: "PRIVACY MODE ON";
+  position: fixed;
+  z-index: 2147483647;
+  right: 12px;
+  bottom: 12px;
+  padding: 5px 8px;
+  border-radius: 6px;
+  background: rgba(8, 127, 91, .92);
+  color: #fff;
+  font: 600 10px/1.2 system-ui, sans-serif;
+  letter-spacing: .4px;
+  pointer-events: none;
+  opacity: .88;
+}
+
+/* Reduced motion preference. */
+@media (prefers-reduced-motion: reduce) {
+  html.wps-enabled * { transition: none !important; }
+}

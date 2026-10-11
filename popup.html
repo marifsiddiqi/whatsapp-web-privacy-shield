@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Privacy Shield</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="panel">
+
+    <!-- Header -->
+    <header class="header">
+      <div class="brand">
+        <div class="brand-icon" aria-hidden="true">◈</div>
+        <div class="brand-text">
+          <h1>Privacy Shield</h1>
+          <p>WhatsApp Web</p>
+        </div>
+      </div>
+      <div class="lang-toggle" role="group" aria-label="Language">
+        <button class="lang-btn" data-lang="id" id="langId">ID</button>
+        <button class="lang-btn" data-lang="en" id="langEn">EN</button>
+      </div>
+    </header>
+
+    <!-- Master toggle -->
+    <div class="master-card">
+      <div class="master-info">
+        <span class="master-label" data-i18n="privacyMode">Privacy Mode</span>
+        <span class="status-badge" id="statusText" data-i18n="checking">—</span>
+      </div>
+      <label class="switch" aria-label="Toggle Privacy Mode">
+        <input id="enabled" type="checkbox">
+        <span class="slider"></span>
+      </label>
+    </div>
+
+    <!-- Settings -->
+    <section class="settings-section" aria-labelledby="settingsTitle">
+      <h2 id="settingsTitle" class="section-title" data-i18n="sectionTitle">Samarkan elemen</h2>
+      <div class="settings-card">
+        <label class="option">
+          <div class="option-info">
+            <span class="option-icon">💬</span>
+            <span data-i18n="blurMessages">Isi pesan</span>
+          </div>
+          <input type="checkbox" id="blurMessages">
+        </label>
+        <label class="option">
+          <div class="option-info">
+            <span class="option-icon">👤</span>
+            <span data-i18n="blurNames">Nama kontak dan grup</span>
+          </div>
+          <input type="checkbox" id="blurNames">
+        </label>
+        <label class="option">
+          <div class="option-info">
+            <span class="option-icon">🖼️</span>
+            <span data-i18n="blurAvatars">Foto profil dan avatar</span>
+          </div>
+          <input type="checkbox" id="blurAvatars">
+        </label>
+        <label class="option">
+          <div class="option-info">
+            <span class="option-icon">📋</span>
+            <span data-i18n="blurPreviews">Preview daftar chat</span>
+          </div>
+          <input type="checkbox" id="blurPreviews">
+        </label>
+        <label class="option">
+          <div class="option-info">
+            <span class="option-icon">🎬</span>
+            <span data-i18n="blurMedia">Thumbnail media</span>
+          </div>
+          <input type="checkbox" id="blurMedia">
+        </label>
+      </div>
+    </section>
+
+    <!-- Notice -->
+    <p class="notice" id="pageNotice" data-i18n="noticeInactive">—</p>
+
+    <footer class="footer" data-i18n="footer">Semua pengaturan disimpan di browser ini.</footer>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>
