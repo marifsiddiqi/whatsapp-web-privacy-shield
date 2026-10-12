@@ -25,11 +25,23 @@
   function applyRootState() {
     const root = document.documentElement;
     if (!root) return;
-    root.classList.toggle("wps-enabled", Boolean(settings.enabled));
-    for (const [setting, className] of Object.entries(CLASS_MAP)) {
-      root.classList.toggle(className, Boolean(settings[setting]));
+
+    // Check before toggling to avoid triggering MutationObserver unnecessarily
+    const shouldBeEnabled = Boolean(settings.enabled);
+    if (root.classList.contains("wps-enabled") !== shouldBeEnabled) {
+      root.classList.toggle("wps-enabled", shouldBeEnabled);
     }
-    root.dataset.wpsReady = "true";
+
+    for (const [setting, className] of Object.entries(CLASS_MAP)) {
+      const shouldHave = Boolean(settings[setting]);
+      if (root.classList.contains(className) !== shouldHave) {
+        root.classList.toggle(className, shouldHave);
+      }
+    }
+
+    if (root.dataset.wpsReady !== "true") {
+      root.dataset.wpsReady = "true";
+    }
   }
 
   // Class-based CSS is intentionally used instead of rewriting message content.
@@ -45,15 +57,30 @@
   function startObserver() {
     if (observer || !document.documentElement) return;
     observer = new MutationObserver(() => {
-      // Re-apply root classes once in case WhatsApp's own boot clears them,
-      // then disconnect — we don't need to watch every DOM mutation thereafter.
-      // Settings changes are handled via chrome.storage.onChanged instead.
-      applyRootState();
-      observer.disconnect();
-      observer = null;
+      // Re-apply if WhatsApp Web's SPA or theme changes wipe the root classes.
+      // RAF debounce prevents any thrashing.
+      scheduleApply();
     });
-    observer.observe(document.documentElement, { childList: true, subtree: false });
+
+    // Only observe root documentElement attributes/children, NOT subtree.
+    // Near-zero CPU overhead while guaranteeing classes are never lost.
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["class"],
+      childList: true,
+      subtree: false
+    });
   }
+
+  // Guard against duplicate listeners if re-injected by background service worker
+  if (window.__wps_initialized) {
+    chrome.storage.local.get(DEFAULTS, stored => {
+      settings = { ...DEFAULTS, ...stored };
+      applyRootState();
+    });
+    return;
+  }
+  window.__wps_initialized = true;
 
   chrome.storage.local.get(DEFAULTS, stored => {
     settings = { ...DEFAULTS, ...stored };
@@ -74,5 +101,13 @@
       settings = { ...DEFAULTS, ...message.settings };
       applyRootState();
     }
+  });
+
+  // Re-verify when user switches back to this tab
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible") scheduleApply();
+  });
+  window.addEventListener("focus", () => {
+    scheduleApply();
   });
 })();

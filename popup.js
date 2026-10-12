@@ -77,7 +77,7 @@ function applyLang(lang) {
 // ── Tab helpers ───────────────────────────────────────────────────────────────
 
 function isWhatsAppTab(tab) {
-  return Boolean(tab?.url && /^https:\/\/web\.whatsapp\.com\//i.test(tab.url));
+  return Boolean(tab?.url && /^https:\/\/web\.whatsapp\.com(\/|$)/i.test(tab.url));
 }
 
 async function getActiveTab() {
@@ -114,13 +114,16 @@ async function applySettings() {
   }
   await chrome.storage.local.set(settings);
 
-  const tab = await getActiveTab();
-  if (isWhatsAppTab(tab)) {
-    try {
-      await chrome.tabs.sendMessage(tab.id, { type: "PRIVACY_SETTINGS_UPDATED", settings });
-    } catch {
-      // Content script may not be attached yet; storage change will sync it.
+  // Broadcast to all WhatsApp tabs (handles multiple windows or non-active focus)
+  try {
+    const waTabs = await chrome.tabs.query({ url: "https://web.whatsapp.com/*" });
+    for (const tab of waTabs) {
+      if (tab.id) {
+        chrome.tabs.sendMessage(tab.id, { type: "PRIVACY_SETTINGS_UPDATED", settings }).catch(() => {});
+      }
     }
+  } catch {
+    // Content script storage.onChanged will catch it as primary fallback
   }
   await refreshStatus();
 }
