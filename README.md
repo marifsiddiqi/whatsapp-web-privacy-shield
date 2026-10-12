@@ -20,6 +20,7 @@
 | 📋 **Preview blur** | Blurs the message snippets shown in the chat list |
 | 🎬 **Media blur** | Blurs image and video thumbnails in the active conversation |
 | 🌐 **Bilingual UI** | Popup interface available in **Indonesian (ID)** and **English (EN)** |
+| 👁️ **Hover to reveal** | Hover your cursor over any blurred element to quickly peek without disabling the extension |
 | 💾 **Local-only** | All settings saved locally — no backend, no analytics, no data collection |
 
 ---
@@ -30,7 +31,7 @@
 
 1. **Download** this repository  
    - Click **Code → Download ZIP** and extract it, **or**  
-   - `git clone https://github.com/YOUR_USERNAME/whatsapp-privacy-shield.git`
+   - `git clone https://github.com/marifsiddiqi/whatsapp-web-privacy-shield.git`
 
 2. **Open your browser's extension page**  
    | Browser | URL |
@@ -66,6 +67,7 @@
 ```
 whatsapp-privacy-shield/
 ├── manifest.json   — Extension metadata and permissions (Manifest V3)
+├── background.js   — Service worker that auto-injects scripts on install/reload
 ├── content.js      — Applies/removes blur CSS classes on the page
 ├── privacy.css     — All CSS blur rules injected into WhatsApp Web
 ├── popup.html      — Extension popup UI
@@ -95,7 +97,7 @@ whatsapp-privacy-shield/
 1. Edit any file
 2. Go to your browser's extension page
 3. Click the **↺ reload** button on the extension card
-4. Refresh the WhatsApp Web tab
+4. The background service worker will automatically re-inject scripts into open WhatsApp Web tabs!
 
 ### CSS selectors
 All blur rules live in [`privacy.css`](privacy.css). Each rule is scoped behind `html.wps-enabled` so they only activate when Privacy Mode is on. If a WhatsApp UI update breaks a selector, inspect the element in DevTools, find the new `data-testid`, and update the relevant rule.
@@ -116,6 +118,7 @@ All blur rules live in [`privacy.css`](privacy.css). Each rule is scoped behind 
 | `storage` | Saves your settings locally in the browser |
 | `activeTab` | Sends real-time setting updates to the current tab |
 | `tabs` | Checks whether the current tab is WhatsApp Web |
+| `scripting` | Automatically re-injects content script into open tabs when extension is reloaded/enabled |
 | `host_permissions: web.whatsapp.com` | Injects the content script and CSS only on WhatsApp Web |
 
 > No data ever leaves your browser. The extension makes **zero network requests** of its own.

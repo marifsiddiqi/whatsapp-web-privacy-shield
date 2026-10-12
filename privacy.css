@@ -14,9 +14,17 @@
 html.wps-enabled.wps-blur-messages [data-testid="msg-container"] .selectable-text,
 html.wps-enabled.wps-blur-messages [data-testid="msg-container"] .copyable-text,
 html.wps-enabled.wps-blur-messages [data-testid="msg-container"] [dir="ltr"],
-html.wps-enabled.wps-blur-messages [data-testid="msg-container"] [dir="auto"] {
+html.wps-enabled.wps-blur-messages [data-testid="msg-container"] [dir="auto"],
+html.wps-enabled.wps-blur-messages .message-in .selectable-text,
+html.wps-enabled.wps-blur-messages .message-in .copyable-text,
+html.wps-enabled.wps-blur-messages .message-in [dir="ltr"],
+html.wps-enabled.wps-blur-messages .message-in [dir="auto"],
+html.wps-enabled.wps-blur-messages .message-out .selectable-text,
+html.wps-enabled.wps-blur-messages .message-out .copyable-text,
+html.wps-enabled.wps-blur-messages .message-out [dir="ltr"],
+html.wps-enabled.wps-blur-messages .message-out [dir="auto"] {
   filter: blur(6px) !important;
-  transition: filter 100ms ease;
+  transition: filter 120ms ease;
 }
 
 /* ─── NAMES (header + all chat-list panels including Archived) ──────────────── */
@@ -25,6 +33,7 @@ html.wps-enabled.wps-blur-names #main header [title],
 html.wps-enabled.wps-blur-names [data-testid="cell-frame-title"] span,
 html.wps-enabled.wps-blur-names [data-testid="conversation-info-header-chat-title"] {
   filter: blur(5px) !important;
+  transition: filter 120ms ease;
 }
 
 /* ─── AVATARS ───────────────────────────────────────────────────────────────── */
@@ -61,14 +70,18 @@ html.wps-enabled.wps-blur-avatars [data-testid="chat-list"] canvas,
 html.wps-enabled.wps-blur-avatars [data-testid="chat-list"] svg {
   filter: blur(8px) !important;
   overflow: hidden;
+  transition: filter 120ms ease;
 }
 
 /* ─── CHAT-LIST PREVIEWS (includes Archived panel) ─────────────────────────── */
 
 html.wps-enabled.wps-blur-previews [data-testid="last-msg"],
 html.wps-enabled.wps-blur-previews [data-testid="last-msg-status"],
-html.wps-enabled.wps-blur-previews [data-testid="cell-frame-secondary"] {
+html.wps-enabled.wps-blur-previews [data-testid="cell-frame-secondary"],
+html.wps-enabled.wps-blur-previews #pane-side [data-testid="cell-frame-secondary"] *,
+html.wps-enabled.wps-blur-previews [data-testid="chat-list"] [data-testid="cell-frame-secondary"] * {
   filter: blur(6px) !important;
+  transition: filter 120ms ease;
 }
 
 /* ─── MEDIA THUMBNAILS (active conversation only) ───────────────────────────── */
@@ -77,14 +90,70 @@ html.wps-enabled.wps-blur-media #main img,
 html.wps-enabled.wps-blur-media #main video,
 html.wps-enabled.wps-blur-media #main canvas {
   filter: blur(10px) !important;
+  transition: filter 120ms ease;
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════════
- * UNBLUR OVERRIDES
+ * UNBLUR OVERRIDES & HOVER-TO-REVEAL
  * Placed AFTER all blur rules so they win on source-order.
- * Where needed, selectors are intentionally longer to beat conflicting rules
- * on specificity as well.
  * ═══════════════════════════════════════════════════════════════════════════════ */
+
+/* Hover to peek messages in active chat */
+html.wps-enabled.wps-blur-messages [data-testid="msg-container"]:hover .selectable-text,
+html.wps-enabled.wps-blur-messages [data-testid="msg-container"]:hover .copyable-text,
+html.wps-enabled.wps-blur-messages [data-testid="msg-container"]:hover [dir="ltr"],
+html.wps-enabled.wps-blur-messages [data-testid="msg-container"]:hover [dir="auto"],
+html.wps-enabled.wps-blur-messages .message-in:hover .selectable-text,
+html.wps-enabled.wps-blur-messages .message-in:hover .copyable-text,
+html.wps-enabled.wps-blur-messages .message-in:hover [dir="ltr"],
+html.wps-enabled.wps-blur-messages .message-in:hover [dir="auto"],
+html.wps-enabled.wps-blur-messages .message-out:hover .selectable-text,
+html.wps-enabled.wps-blur-messages .message-out:hover .copyable-text,
+html.wps-enabled.wps-blur-messages .message-out:hover [dir="ltr"],
+html.wps-enabled.wps-blur-messages .message-out:hover [dir="auto"] {
+  filter: none !important;
+}
+
+/* Hover to peek names and conversation headers */
+html.wps-enabled.wps-blur-names #main header [title]:hover,
+html.wps-enabled.wps-blur-names [data-testid="cell-frame-title"]:hover span,
+html.wps-enabled.wps-blur-names [data-testid="conversation-info-header-chat-title"]:hover {
+  filter: none !important;
+}
+
+/* Hover to peek chat-list previews */
+html.wps-enabled.wps-blur-previews [data-testid="cell-frame-secondary"]:hover,
+html.wps-enabled.wps-blur-previews [data-testid="cell-frame-secondary"]:hover *,
+html.wps-enabled.wps-blur-previews [data-testid="last-msg"]:hover {
+  filter: none !important;
+}
+
+/* Hover to peek avatars */
+html.wps-enabled.wps-blur-avatars [data-testid*="avatar"]:hover,
+html.wps-enabled.wps-blur-avatars #main header img:hover,
+html.wps-enabled.wps-blur-avatars #main header canvas:hover,
+html.wps-enabled.wps-blur-avatars #main header svg:hover,
+html.wps-enabled.wps-blur-avatars #side img:hover,
+html.wps-enabled.wps-blur-avatars [data-testid="chat-list"] img:hover {
+  filter: none !important;
+}
+
+/* Hover to peek media thumbnails */
+html.wps-enabled.wps-blur-media #main img:hover,
+html.wps-enabled.wps-blur-media #main video:hover,
+html.wps-enabled.wps-blur-media #main canvas:hover {
+  filter: none !important;
+}
+
+/* Hover over whole chat item in sidebar to peek row */
+html.wps-enabled #pane-side [role="row"]:hover [data-testid="cell-frame-title"] span,
+html.wps-enabled #pane-side [role="row"]:hover [data-testid="cell-frame-secondary"],
+html.wps-enabled #pane-side [role="row"]:hover [data-testid="cell-frame-secondary"] *,
+html.wps-enabled [data-testid="chat-list"] [role="listitem"]:hover [data-testid="cell-frame-title"] span,
+html.wps-enabled [data-testid="chat-list"] [role="listitem"]:hover [data-testid="cell-frame-secondary"],
+html.wps-enabled [data-testid="chat-list"] [role="listitem"]:hover [data-testid="cell-frame-secondary"] * {
+  filter: none !important;
+}
 
 /* Keep the message composer and controls fully usable. */
 html.wps-enabled #main footer,

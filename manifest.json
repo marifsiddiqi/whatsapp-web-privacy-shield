@@ -3,8 +3,11 @@
   "name": "WhatsApp Web Privacy Shield",
   "version": "1.0.0",
   "description": "A local visual privacy layer for WhatsApp Web when using your browser in public.",
-  "permissions": ["storage", "activeTab", "tabs"],
+  "permissions": ["storage", "activeTab", "tabs", "scripting"],
   "host_permissions": ["https://web.whatsapp.com/*"],
+  "background": {
+    "service_worker": "background.js"
+  },
   "action": {
     "default_title": "WhatsApp Privacy Shield",
     "default_popup": "popup.html"
